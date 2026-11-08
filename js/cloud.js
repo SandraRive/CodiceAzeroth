@@ -9,8 +9,8 @@ const configured = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith('T
 // JSON con claves ordenadas, para comparar datos sin falsos positivos
 const stable = v => JSON.stringify(v, (k, x) =>
   x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.entries(x).sort()) : x);
-const sameData = (a, b) => stable({ c: a.chars, t: a.tasks }) === stable({ c: b.chars, t: b.tasks });
-const plain = s => JSON.parse(JSON.stringify({ chars: s.chars, tasks: s.tasks, weekKey: s.weekKey }));
+const sameData = (a, b) => stable({ c: a.chars, t: a.tasks, r: a.raids }) === stable({ c: b.chars, t: b.tasks, r: b.raids });
+const plain = s => JSON.parse(JSON.stringify({ chars: s.chars, tasks: s.tasks, weekKey: s.weekKey, raids: s.raids }));
 
 // ---- Pantalla de inicio de sesión ----
 const gate = document.getElementById('gate');
@@ -95,7 +95,7 @@ async function init() {
     box.querySelector('#btnLogout').onclick = async () => {
       await A.signOut(auth);
       // Limpia la copia local para que nadie más vea tus datos en este navegador
-      App.setState({ chars: [], tasks: App.defaultTasks(), weekKey: '' });
+      App.setState({ chars: [] });
     };
   }
 
@@ -129,7 +129,7 @@ async function init() {
       const local = App.state;
       if (snap.exists()) {
         const d = snap.data();
-        const remote = { chars: d.chars || [], tasks: d.tasks || App.defaultTasks(), weekKey: d.weekKey || '' };
+        const remote = App.normalize({ chars: d.chars || [], tasks: d.tasks || App.defaultTasks(), weekKey: d.weekKey || '', raids: d.raids || App.state.raids });
         if (!local.chars.length || sameData(local, remote)) {
           App.setState(remote);
         } else if (confirm(
@@ -153,7 +153,7 @@ async function init() {
       unsub = F.onSnapshot(ref, s => {
         if (!s.exists() || s.metadata.hasPendingWrites) return;
         const d = s.data();
-        const remote = { chars: d.chars || [], tasks: d.tasks || App.defaultTasks(), weekKey: d.weekKey || '' };
+        const remote = App.normalize({ chars: d.chars || [], tasks: d.tasks || App.defaultTasks(), weekKey: d.weekKey || '', raids: d.raids || App.state.raids });
         if (!sameData(remote, App.state)) App.setState(remote);
       });
     } catch (e) {

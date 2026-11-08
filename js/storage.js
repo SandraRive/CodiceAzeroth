@@ -7,10 +7,10 @@ const Store = {
       const raw = localStorage.getItem(STORE_KEY);
       if (raw) {
         const d = JSON.parse(raw);
-        return { chars: d.chars || [], tasks: d.tasks || structuredClone(DEFAULT_TASKS), weekKey: d.weekKey || '' };
+        return { chars: d.chars || [], tasks: d.tasks || structuredClone(DEFAULT_TASKS), weekKey: d.weekKey || '', raids: d.raids || structuredClone(DEFAULT_RAIDS) };
       }
     } catch (e) { console.warn('No se pudo leer el guardado', e); }
-    return { chars: [], tasks: structuredClone(DEFAULT_TASKS), weekKey: '' };
+    return { chars: [], tasks: structuredClone(DEFAULT_TASKS), weekKey: '', raids: structuredClone(DEFAULT_RAIDS) };
   },
   save(state) {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { console.warn('No se pudo guardar', e); }

@@ -40,6 +40,7 @@
   </div>
   <div class="top-actions">
     <div class="account" id="account"></div>
+    <button class="btn" id="btnImport">⚡ Importar</button>
     <button class="btn gold" id="btnAdd">＋ Nuevo personaje</button>
   </div>
 </header>
@@ -49,6 +50,8 @@
 <nav class="tabs">
   <button class="tab active" data-view="chars">🛡️ Personajes</button>
   <button class="tab" data-view="profs">⚒️ Profesiones</button>
+  <button class="tab" data-view="vault">🏛️ Gran Cámara</button>
+  <button class="tab" data-view="raids">🐲 Bandas</button>
   <button class="tab" data-view="weekly">📅 Semanal</button>
   <button class="tab" data-view="data">💾 Datos</button>
 </nav>
@@ -68,6 +71,7 @@
         <option value="gold">Orden: oro</option>
         <option value="name">Orden: nombre</option>
       </select>
+      <button class="btn" id="btnSyncAll" title="Actualiza iLvl, M+ y bandas de todos desde Raider.IO">🔄 Actualizar todos</button>
     </div>
     <div class="grid" id="charGrid"></div>
   </section>
@@ -83,6 +87,41 @@
       <h2>Detalle por profesión</h2>
       <div id="profDetail"></div>
     </div>
+  </section>
+
+  <!-- GRAN CÁMARA -->
+  <section class="view" id="view-vault">
+    <div class="panel slim">
+      <h2>Gran Cámara</h2>
+      <p class="hint">Cada fila desbloquea hasta 3 recompensas. La fila de banda se rellena sola con tus <b>bloqueos</b>, y la de mazmorras con tus llaves de esta semana al pulsar 🔄. El miércoles se reinicia.</p>
+    </div>
+    <div class="vault-grid" id="vaultGrid"></div>
+  </section>
+
+  <!-- BANDAS -->
+  <section class="view" id="view-raids">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Bloqueos de banda</h2>
+          <p class="hint">Marca los jefes que ha matado cada personaje esta semana. Cada dificultad tiene su propio bloqueo.</p>
+        </div>
+        <div class="inline wrap">
+          <select id="raidSel"></select>
+          <div class="seg" id="diffSeg"></div>
+        </div>
+      </div>
+      <div class="weekly-wrap" id="lockTable"></div>
+    </div>
+    <details class="panel">
+      <summary><b>⚙️ Gestionar bandas</b> <span class="muted small">— añade la banda de la próxima temporada o edita jefes</span></summary>
+      <div id="raidAdmin"></div>
+      <div class="raid-new">
+        <input id="newRaidName" placeholder="Nombre de la banda">
+        <textarea id="newRaidBosses" rows="2" placeholder="Jefes separados por comas, en orden"></textarea>
+        <button class="btn gold" id="btnAddRaid">Añadir banda</button>
+      </div>
+    </details>
   </section>
 
   <!-- SEMANAL -->
@@ -131,6 +170,7 @@
         <div class="row">
           <label>Nombre<input name="name" required maxlength="24"></label>
           <label>Reino<input name="realm" maxlength="32" placeholder="Sanguino, Tyrande…"></label>
+          <label class="narrow">Región<select name="region"><option value="eu">EU</option><option value="us">US</option><option value="kr">KR</option><option value="tw">TW</option></select></label>
         </div>
         <div class="row">
           <label>Facción<select name="faction"><option>Alianza</option><option>Horda</option></select></label>
@@ -146,7 +186,7 @@
       <fieldset>
         <legend>Progreso</legend>
         <div class="row four">
-          <label>Nivel<input type="number" name="level" min="1" max="90" value="80"></label>
+          <label>Nivel<input type="number" name="level" min="1" max="90" value="90"></label>
           <label>iLvl<input type="number" name="ilvl" min="0" max="999" value="0"></label>
           <label>Puntuación M+<input type="number" name="mplus" min="0" max="5000" value="0"></label>
           <label>Oro<input type="number" name="gold" min="0" value="0"></label>
@@ -178,10 +218,35 @@
   </form>
 </div>
 
+<!-- MODAL IMPORTAR -->
+<div class="modal" id="importModal" hidden>
+  <form class="sheet small" id="importForm" autocomplete="off">
+    <div class="sheet-head">
+      <h2>⚡ Importar desde Raider.IO</h2>
+      <button type="button" class="x" data-close-import>✕</button>
+    </div>
+    <div class="sheet-body">
+      <p class="hint">Escribe el nombre y el reino tal cual salen en el juego. Se rellenan solos clase, especialización, raza, facción, iLvl, M+ y progreso de banda. Las profesiones y el oro los añades tú.</p>
+      <div class="row">
+        <label>Nombre<input name="name" required maxlength="24" placeholder="Sandriu"></label>
+        <label>Reino<input name="realm" required maxlength="32" placeholder="Sanguino"></label>
+        <label class="narrow">Región<select name="region"><option value="eu">EU</option><option value="us">US</option><option value="kr">KR</option><option value="tw">TW</option></select></label>
+      </div>
+      <p class="import-msg" id="importMsg"></p>
+    </div>
+    <div class="sheet-foot">
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close-import>Cancelar</button>
+      <button type="submit" class="btn gold" id="btnDoImport">Buscar personaje</button>
+    </div>
+  </form>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="js/data.js"></script>
 <script src="js/storage.js"></script>
+<script src="js/raiderio.js"></script>
 <script src="js/app.js"></script>
 <script type="module" src="js/cloud.js"></script>
 </body>

@@ -178,6 +178,7 @@ body.locked{overflow:hidden}
   background:radial-gradient(800px 500px at 50% 35%,#3a2508aa,transparent 70%),radial-gradient(600px 400px at 15% 90%,#0d2a4a88,transparent),radial-gradient(600px 400px at 85% 90%,#4a0d1188,transparent),#07080c;
   transition:opacity .5s,visibility .5s}
 .gate.out{opacity:0;visibility:hidden}
+.gate[hidden]{display:none}
 .gate-card{position:relative;text-align:center;max-width:440px;width:100%;padding:2.5rem 2rem;border-radius:22px;
   background:linear-gradient(180deg,#1a1610ee,#0f1117ee);border:1px solid var(--gold2);
   box-shadow:0 0 0 1px #0008,0 0 60px #f8b70022,var(--shadow);animation:rise .7s cubic-bezier(.2,.8,.2,1)}
@@ -210,3 +211,66 @@ body.locked{overflow:hidden}
 .embers i:nth-child(11){left:93%;animation-delay:8s}.embers i:nth-child(12){left:3%;animation-delay:6s}
 @keyframes ember{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:.9}100%{transform:translateY(-105vh) translateX(40px);opacity:0}}
 @media (prefers-reduced-motion:reduce){.embers,.gate-sigil{animation:none}.embers i{display:none}}
+
+/* ---- Raider.IO ---- */
+.crest img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.rg{font-size:.65rem;border:1px solid var(--line);border-radius:4px;padding:0 .25rem;margin-left:.2rem}
+.btn.icon{padding:.35rem .5rem}
+.spinning{animation:spin .8s linear infinite;pointer-events:none}
+.synced{font-size:.72rem;color:var(--muted);margin-top:-.4rem}
+.synced a{color:var(--gold2)}
+.sheet.small{width:min(560px,100%)}
+.import-msg{min-height:1.3rem;font-size:.88rem;color:var(--gold)}
+label.narrow,.row>label.narrow{flex:0 1 90px}
+
+/* ---- Bandas ---- */
+.seg{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{font:600 .82rem Inter;color:var(--muted);background:none;border:none;padding:.45rem .75rem;border-radius:7px;cursor:pointer}
+.seg button.on{color:#0b0d12;background:var(--dc)}
+#raidSel{width:auto}
+.locks th{max-width:110px;white-space:normal;line-height:1.25;vertical-align:bottom}
+.locks th .bn{display:block;color:var(--dc);font-size:.9rem;margin-bottom:.15rem}
+.tick.lock input:checked+span{background:var(--dc);border-color:var(--dc);box-shadow:0 0 10px color-mix(in srgb,var(--dc) 50%,transparent)}
+.dots{display:flex;justify-content:center;gap:3px;height:6px;margin-top:3px}
+.dots i,.legend i{width:6px;height:6px;border-radius:50%;display:inline-block}
+.legend{margin:.9rem 0 0;display:flex;flex-wrap:wrap;gap:.8rem;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:.3rem}
+.cnt{font-weight:700;white-space:nowrap}
+.cnt.full{color:var(--gold)}
+.mini{font:600 .7rem Inter;color:var(--muted);background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:.15rem .4rem;cursor:pointer;margin-left:.4rem}
+.mini:hover{color:var(--gold);border-color:var(--gold2)}
+details.panel summary{cursor:pointer;list-style:none}
+details.panel summary::-webkit-details-marker{display:none}
+details.panel[open] summary{margin-bottom:1rem}
+.raid-admin{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.7rem 0;border-bottom:1px solid var(--line)}
+.raid-new{display:grid;gap:.6rem;margin-top:1rem}
+.raid-new .btn{justify-self:start}
+
+/* ---- Gran Cámara ---- */
+.panel.slim{padding:1rem 1.2rem}
+.panel.slim .hint{margin:0}
+.vault-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:1rem}
+.vault-card{background:linear-gradient(160deg,color-mix(in srgb,var(--cc) 10%,var(--panel)),var(--panel) 50%);border:1px solid color-mix(in srgb,var(--cc) 35%,var(--line));border-radius:var(--r);padding:1rem;display:flex;flex-direction:column;gap:.8rem;position:relative;overflow:hidden}
+.vault-card::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--cc)}
+.vault-card header{display:flex;align-items:center;gap:.7rem}
+.vault-card header>div:nth-child(2){flex:1}
+.vault-card h3{color:var(--cc);font-size:1.05rem}
+.crest.sm{width:40px;height:40px;font-size:1.2rem;border-radius:10px;flex:none;display:grid;place-items:center;background:color-mix(in srgb,var(--cc) 22%,#000);border:2px solid var(--cc);overflow:hidden}
+.crest.sm img{width:100%;height:100%;object-fit:cover}
+.vtotal{font-weight:700;font-size:.85rem;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:.25rem .6rem}
+.vtotal.has{color:var(--gold);border-color:var(--gold2);box-shadow:0 0 12px #f8b70033}
+.vrow{display:grid;grid-template-columns:100px 1fr;gap:.4rem .7rem;align-items:center}
+.vlabel{font-weight:600;font-size:.85rem}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+.slot{border:1px dashed var(--line);border-radius:10px;padding:.45rem .3rem;text-align:center;background:#0005;min-height:52px;display:flex;flex-direction:column;justify-content:center}
+.slot b{font-size:.9rem}
+.slot small{font-size:.65rem;color:var(--muted)}
+.slot.on{border:1px solid var(--sc);background:color-mix(in srgb,var(--sc) 14%,#000);box-shadow:inset 0 0 14px color-mix(in srgb,var(--sc) 25%,transparent)}
+.slot.on b{color:var(--sc)}
+.runs,.row-note{grid-column:2;display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+.row-note{font-size:.72rem;color:var(--muted)}
+.runs input{width:90px;padding:.25rem .5rem;font-size:.78rem}
+.chip.run{font-weight:700}
+.chip.run button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.65rem}
+.chip.run button:hover{color:#ff8a8a}
+@media (max-width:600px){.vault-grid{grid-template-columns:1fr}.vrow{grid-template-columns:1fr}.runs,.row-note{grid-column:1}}

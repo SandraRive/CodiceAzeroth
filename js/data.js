@@ -45,8 +45,6 @@ const SECONDARY = [
 ];
 
 const DEFAULT_TASKS = [
-  { id: 't1', name: 'Gran Cámara (M+)' },
-  { id: 't2', name: 'Banda semanal' },
   { id: 't3', name: 'Jefe de mundo' },
   { id: 't4', name: 'Misión semanal de profesión' },
   { id: 't5', name: 'Tratados / conocimiento de profesión' },
@@ -54,15 +52,66 @@ const DEFAULT_TASKS = [
 
 const DEMO = [
   { name: 'Sandriu', realm: 'Sanguino', faction: 'Horda', race: 'Elfo de sangre', cls: 'pal', spec: 'Sagrado', main: true,
-    level: 80, ilvl: 652, mplus: 2450, gold: 184500, raid: '8/8 N · 6/8 H',
+    region: 'eu', level: 90, ilvl: 298, mplus: 2450, gold: 184500, raid: '8/8 N · 5/8 H',
     profs: [{ id: 'joy', skill: 100, max: 100, notes: 'Especialización en engarces' }, { id: 'min', skill: 87, max: 100, notes: '' }],
-    sec: { coc: 100, pes: 45, arq: 0 }, notes: 'Main de banda. Falta montura de la gloria.' },
+    sec: { coc: 100, pes: 45, arq: 0 }, notes: 'Main de banda. Falta montura de la gloria.',
+    week: { mplus: [12, 11, 10, 10, 9], world: [8, 8, 6], raid: { 'the-venomous-abyss': { 0: ['N','H'], 1: ['N','H'], 2: ['N','H'], 3: ['N'], 4: ['N'] } } } },
   { name: 'Nyxia', realm: 'Sanguino', faction: 'Horda', race: 'Nocheterna', cls: 'mag', spec: 'Fuego', main: false,
-    level: 80, ilvl: 631, mplus: 1820, gold: 42300, raid: '8/8 N',
+    region: 'eu', level: 90, ilvl: 287, mplus: 1820, gold: 42300, raid: '8/8 N',
     profs: [{ id: 'sas', skill: 72, max: 100, notes: '' }, { id: 'enc', skill: 100, max: 100, notes: 'Desencantar todo aquí' }],
-    sec: { coc: 20, pes: 0, arq: 0 }, notes: '' },
+    sec: { coc: 20, pes: 0, arq: 0 }, notes: '',
+    week: { mplus: [7], world: [], raid: { 'the-venomous-abyss': { 0: ['N'], 1: ['N'] } } } },
   { name: 'Grumbold', realm: 'Tyrande', faction: 'Alianza', race: 'Enano Hierro Negro', cls: 'war', spec: 'Protección', main: false,
-    level: 74, ilvl: 590, mplus: 0, gold: 9800, raid: '',
+    region: 'eu', level: 84, ilvl: 240, mplus: 0, gold: 9800, raid: '',
     profs: [{ id: 'her', skill: 55, max: 100, notes: '' }, { id: 'min', skill: 60, max: 100, notes: '' }],
     sec: { coc: 0, pes: 80, arq: 30 }, notes: 'Subir a 80 antes del parche.' },
 ];
+
+const MAX_LEVEL = 90;
+
+// ---- Bandas (editables desde la pestaña Bandas) ----
+const DEFAULT_RAIDS = [
+  { id: 'the-venomous-abyss', name: 'The Venomous Abyss',
+    bosses: ["Nek'zali the Soulcoiler", 'Entombed Sentinels', 'The Lost Explorers', 'Vashnik the Malignant',
+             'Sszorak', 'The Twin Fangs', 'The Coiled Altar', "Ula'tek"] },
+];
+
+// Dificultades (rank sirve para saber cuál es mejor)
+const DIFFS = [
+  { id: 'L', name: 'Buscador', short: 'BdB', rank: 1, color: '#1eff00' },
+  { id: 'N', name: 'Normal',   short: 'N',   rank: 2, color: '#0070dd' },
+  { id: 'H', name: 'Heroico',  short: 'H',   rank: 3, color: '#a335ee' },
+  { id: 'M', name: 'Mítico',   short: 'M',   rank: 4, color: '#ff8000' },
+];
+
+// ---- Gran Cámara: actividades necesarias para cada hueco ----
+const VAULT = {
+  raid:  { name: 'Banda',      icon: '🐲', thresholds: [2, 4, 6], unit: 'jefes' },
+  mplus: { name: 'Mazmorras',  icon: '🗝️', thresholds: [1, 4, 8], unit: 'mazmorras' },
+  world: { name: 'Mundo',      icon: '🌍', thresholds: [2, 4, 8], unit: 'actividades' },
+};
+
+// ---- Traducciones de Raider.IO (inglés → claves de la web) ----
+const RIO_CLASS = {
+  'Death Knight': 'dk', 'Demon Hunter': 'dh', 'Druid': 'dru', 'Evoker': 'evo', 'Hunter': 'hun', 'Mage': 'mag',
+  'Monk': 'mon', 'Paladin': 'pal', 'Priest': 'pri', 'Rogue': 'rog', 'Shaman': 'sha', 'Warlock': 'wlk', 'Warrior': 'war',
+};
+// Mismo orden que CLASSES[x].specs
+const RIO_SPECS = {
+  dk: ['Blood', 'Frost', 'Unholy'], dh: ['Havoc', 'Vengeance', 'Devourer'],
+  dru: ['Balance', 'Feral', 'Guardian', 'Restoration'], evo: ['Devastation', 'Preservation', 'Augmentation'],
+  hun: ['Beast Mastery', 'Marksmanship', 'Survival'], mag: ['Arcane', 'Fire', 'Frost'],
+  mon: ['Brewmaster', 'Mistweaver', 'Windwalker'], pal: ['Holy', 'Protection', 'Retribution'],
+  pri: ['Discipline', 'Holy', 'Shadow'], rog: ['Assassination', 'Outlaw', 'Subtlety'],
+  sha: ['Elemental', 'Enhancement', 'Restoration'], wlk: ['Affliction', 'Demonology', 'Destruction'],
+  war: ['Arms', 'Fury', 'Protection'],
+};
+const RIO_RACE = {
+  'Human': 'Humano', 'Dwarf': 'Enano', 'Night Elf': 'Elfo de la noche', 'Gnome': 'Gnomo', 'Draenei': 'Draenei',
+  'Worgen': 'Huargen', 'Pandaren': 'Pandaren', 'Dracthyr': 'Dracthyr', 'Earthen': 'Terráneo', 'Haranir': 'Haranir',
+  'Void Elf': 'Elfo del Vacío', 'Lightforged Draenei': 'Draenei forjado por la Luz', 'Dark Iron Dwarf': 'Enano Hierro Negro',
+  'Kul Tiran': 'Kultirano', 'Mechagnome': 'Mecagnomo', 'Orc': 'Orco', 'Undead': 'No-muerto', 'Tauren': 'Tauren',
+  'Troll': 'Trol', 'Blood Elf': 'Elfo de sangre', 'Goblin': 'Goblin', 'Nightborne': 'Nocheterna',
+  'Highmountain Tauren': 'Tauren Monte Alto', "Mag'har Orc": "Orco Mag'har", 'Zandalari Troll': 'Trol zandalari',
+  'Vulpera': 'Vulpera',
+};
