@@ -8,7 +8,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body class="locked">
+<!-- PANTALLA DE INICIO DE SESIÓN -->
+<div class="gate" id="gate">
+  <div class="embers" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="gate-card">
+    <div class="gate-sigil">⚜</div>
+    <h1>Códice de Azeroth</h1>
+    <p class="gate-sub">Tus héroes, sus oficios y tu semana, en un solo tomo.</p>
+    <div class="gate-feats">
+      <span>🛡️ Personajes</span><span>⚒️ Profesiones</span><span>📅 Semanales</span>
+    </div>
+    <button class="btn google big" id="gateLogin" disabled><span class="g">G</span> Entrar con Google</button>
+    <p class="gate-msg" id="gateMsg"><span class="spin"></span> Abriendo el portal…</p>
+    <button class="linkbtn" id="gateOffline" hidden>Continuar sin conexión</button>
+    <p class="gate-foot">Tus datos se guardan en tu cuenta y se sincronizan entre tus dispositivos.</p>
+  </div>
+</div>
+
 <header class="top">
   <div class="brand">
     <div class="sigil">⚜</div>

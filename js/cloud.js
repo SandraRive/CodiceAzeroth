@@ -11,12 +11,33 @@ const stable = v => JSON.stringify(v, (k, x) =>
 const sameData = (a, b) => stable({ c: a.chars, t: a.tasks }) === stable({ c: b.chars, t: b.tasks });
 const plain = s => JSON.parse(JSON.stringify({ chars: s.chars, tasks: s.tasks, weekKey: s.weekKey }));
 
+// ---- Pantalla de inicio de sesión ----
+const gate = document.getElementById('gate');
+const gateBtn = document.getElementById('gateLogin');
+const gateMsg = document.getElementById('gateMsg');
+const gateOffline = document.getElementById('gateOffline');
+const msg = (html, busy = false) => { gateMsg.innerHTML = (busy ? '<span class="spin"></span> ' : '') + html; };
+function showGate() {
+  document.body.classList.add('locked');
+  gate.classList.remove('out'); gate.hidden = false;
+  gateBtn.disabled = false; msg('');
+}
+function hideGate() {
+  document.body.classList.remove('locked');
+  gate.classList.add('out');
+  setTimeout(() => { gate.hidden = true; }, 500);
+}
+gateOffline.onclick = hideGate;
+
 if (!configured) {
+  hideGate();
   box.innerHTML = '<span class="acc-off" title="Rellena js/firebase-config.js para activar la nube">☁️ Solo local</span>';
 } else {
   init().catch(e => {
     console.error(e);
     box.innerHTML = '<span class="acc-off">⚠️ Nube no disponible</span>';
+    msg('⚠️ No se pudo conectar con el servidor.');
+    gateOffline.hidden = false;
   });
 }
 
@@ -70,17 +91,26 @@ async function init() {
     box.innerHTML = `<div class="who-acc" title="${user.email || ''}">${avatar}<span>${first}</span>
       <i class="sync" data-s="${status}" title="${LABEL[status]}"></i></div>
       <button class="btn sm" id="btnLogout">Salir</button>`;
-    box.querySelector('#btnLogout').onclick = () => A.signOut(auth).then(() => App.toast('👋 Sesión cerrada (tus datos siguen en este navegador)'));
+    box.querySelector('#btnLogout').onclick = async () => {
+      await A.signOut(auth);
+      // Limpia la copia local para que nadie más vea tus datos en este navegador
+      App.setState({ chars: [], tasks: App.defaultTasks(), weekKey: '' });
+    };
   }
 
+  gateBtn.onclick = login;
+
   async function login() {
+    gateBtn.disabled = true; msg('Esperando a Google…', true);
     try {
       await A.signInWithPopup(auth, provider);
     } catch (e) {
+      gateBtn.disabled = false; msg('');
       if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
+      if (e.code === 'auth/popup-blocked') { msg('⚠️ El navegador ha bloqueado la ventana. Permite las ventanas emergentes.'); return; }
       if (e.code === 'auth/unauthorized-domain')
-        App.toast('⚠️ Añade ' + location.hostname + ' en Authentication → Settings → Authorized domains');
-      else App.toast('⚠️ No se pudo iniciar sesión (' + e.code + ')');
+        msg('⚠️ Añade <b>' + location.hostname + '</b> en Authentication → Configuración → Dominios autorizados');
+      else msg('⚠️ No se pudo iniciar sesión (' + e.code + ')');
       console.error(e);
     }
   }
@@ -88,7 +118,8 @@ async function init() {
   A.onAuthStateChanged(auth, async u => {
     user = u; ready = false; unsub?.(); unsub = null; clearTimeout(timer);
     renderAccount();
-    if (!u) return;
+    if (!u) { showGate(); return; }
+    msg('Abriendo tu códice…', true);
 
     ref = F.doc(db, 'users', u.uid);
     setStatus('loading');
@@ -114,6 +145,7 @@ async function init() {
       }
       ready = true;
       setStatus('idle');
+      hideGate();
       App.toast(`⚔️ ¡Bienvenida, ${(u.displayName || '').split(' ')[0] || 'aventurera'}!`);
 
       // Cambios desde otros dispositivos, en tiempo real
@@ -125,7 +157,8 @@ async function init() {
       });
     } catch (e) {
       console.error(e); setStatus('error');
-      App.toast(e.code === 'permission-denied'
+      gateBtn.disabled = false;
+      msg(e.code === 'permission-denied'
         ? '⚠️ Firestore ha denegado el acceso: revisa las reglas'
         : '⚠️ Error con la nube (' + (e.code || e.message) + ')');
     }
