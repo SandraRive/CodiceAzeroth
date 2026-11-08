@@ -16,11 +16,13 @@ function checkReset() {
   if (state.weekKey !== key) {
     state.chars.forEach(c => c.weekly = {});
     state.weekKey = key;
-    Store.save(state);
+    persist();
   }
 }
 
-function save() { Store.save(state); render(); }
+// Guarda en el navegador y, si hay sesión iniciada, en la nube
+function persist() { Store.save(state); window.Cloud?.push(state); }
+function save() { persist(); render(); }
 
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
@@ -333,3 +335,16 @@ $('#fClass').innerHTML += Object.entries(CLASSES).map(([k, c]) => `<option value
 checkReset();
 render();
 setInterval(() => { checkReset(); renderWeekly(); }, 60000);
+
+// Puente para cloud.js (Firebase)
+window.App = {
+  get state() { return state; },
+  setState(s) {
+    state = { chars: s.chars || [], tasks: s.tasks || structuredClone(DEFAULT_TASKS), weekKey: s.weekKey || '' };
+    Store.save(state);
+    checkReset();
+    render();
+  },
+  toast,
+  defaultTasks: () => structuredClone(DEFAULT_TASKS),
+};
