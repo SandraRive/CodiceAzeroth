@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Códice de Azeroth · Mis personajes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <div class="sigil">⚜</div>
+    <div>
+      <h1>Códice de Azeroth</h1>
+      <p class="sub">Personajes · Profesiones · Semanales</p>
+    </div>
+  </div>
+  <button class="btn gold" id="btnAdd">＋ Nuevo personaje</button>
+</header>
+
+<section class="stats" id="stats"></section>
+
+<nav class="tabs">
+  <button class="tab active" data-view="chars">🛡️ Personajes</button>
+  <button class="tab" data-view="profs">⚒️ Profesiones</button>
+  <button class="tab" data-view="weekly">📅 Semanal</button>
+  <button class="tab" data-view="data">💾 Datos</button>
+</nav>
+
+<main>
+  <!-- PERSONAJES -->
+  <section class="view active" id="view-chars">
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="🔍 Buscar nombre, reino, clase…">
+      <select id="fFaction"><option value="">Todas las facciones</option><option>Alianza</option><option>Horda</option></select>
+      <select id="fClass"><option value="">Todas las clases</option></select>
+      <select id="fRole"><option value="">Todos los roles</option><option value="T">Tanque</option><option value="H">Sanador</option><option value="D">DPS</option></select>
+      <select id="sort">
+        <option value="main">Orden: principal primero</option>
+        <option value="ilvl">Orden: nivel de objeto</option>
+        <option value="level">Orden: nivel</option>
+        <option value="gold">Orden: oro</option>
+        <option value="name">Orden: nombre</option>
+      </select>
+    </div>
+    <div class="grid" id="charGrid"></div>
+  </section>
+
+  <!-- PROFESIONES -->
+  <section class="view" id="view-profs">
+    <div class="panel">
+      <h2>Cobertura de profesiones</h2>
+      <p class="hint">Qué profesiones tienes cubiertas entre todos tus personajes. Las apagadas aún no las tiene nadie.</p>
+      <div class="coverage" id="coverage"></div>
+    </div>
+    <div class="panel">
+      <h2>Detalle por profesión</h2>
+      <div id="profDetail"></div>
+    </div>
+  </section>
+
+  <!-- SEMANAL -->
+  <section class="view" id="view-weekly">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Tareas semanales</h2>
+          <p class="hint" id="resetInfo"></p>
+        </div>
+        <div class="inline">
+          <input type="text" id="newTask" placeholder="Nueva tarea semanal…">
+          <button class="btn" id="btnAddTask">Añadir</button>
+        </div>
+      </div>
+      <div class="tasklist" id="taskList"></div>
+      <div class="weekly-wrap" id="weeklyTable"></div>
+    </div>
+  </section>
+
+  <!-- DATOS -->
+  <section class="view" id="view-data">
+    <div class="panel">
+      <h2>Copia de seguridad</h2>
+      <p class="hint">Todo se guarda en este navegador. Exporta de vez en cuando para no perder nada o para pasarlo a otro ordenador.</p>
+      <div class="inline wrap">
+        <button class="btn gold" id="btnExport">⬇️ Exportar JSON</button>
+        <label class="btn">⬆️ Importar JSON<input type="file" id="fileImport" accept="application/json" hidden></label>
+        <button class="btn" id="btnDemo">✨ Cargar ejemplo</button>
+        <button class="btn danger" id="btnWipe">🗑️ Borrar todo</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div class="modal" id="modal" hidden>
+  <form class="sheet" id="charForm" autocomplete="off">
+    <div class="sheet-head">
+      <h2 id="formTitle">Nuevo personaje</h2>
+      <button type="button" class="x" data-close>✕</button>
+    </div>
+    <div class="sheet-body">
+      <fieldset>
+        <legend>Identidad</legend>
+        <div class="row">
+          <label>Nombre<input name="name" required maxlength="24"></label>
+          <label>Reino<input name="realm" maxlength="32" placeholder="Sanguino, Tyrande…"></label>
+        </div>
+        <div class="row">
+          <label>Facción<select name="faction"><option>Alianza</option><option>Horda</option></select></label>
+          <label>Raza<select name="race"></select></label>
+        </div>
+        <div class="row">
+          <label>Clase<select name="cls"></select></label>
+          <label>Especialización<select name="spec"></select></label>
+        </div>
+        <label class="check"><input type="checkbox" name="main"> ⭐ Es mi personaje principal</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Progreso</legend>
+        <div class="row four">
+          <label>Nivel<input type="number" name="level" min="1" max="90" value="80"></label>
+          <label>iLvl<input type="number" name="ilvl" min="0" max="999" value="0"></label>
+          <label>Puntuación M+<input type="number" name="mplus" min="0" max="5000" value="0"></label>
+          <label>Oro<input type="number" name="gold" min="0" value="0"></label>
+        </div>
+        <label>Progreso de banda<input name="raid" placeholder="Ej: 8/8 N · 5/8 H"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Profesiones principales</legend>
+        <div id="primProfs"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Profesiones secundarias</legend>
+        <div class="row three" id="secProfs"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Notas</legend>
+        <textarea name="notes" rows="3" placeholder="Transfiguración pendiente, monturas que farmear, recetas que te faltan…"></textarea>
+      </fieldset>
+    </div>
+    <div class="sheet-foot">
+      <button type="button" class="btn danger" id="btnDelete">Eliminar</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>Cancelar</button>
+      <button type="submit" class="btn gold">Guardar</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
