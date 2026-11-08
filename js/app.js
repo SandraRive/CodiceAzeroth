@@ -336,6 +336,14 @@ checkReset();
 render();
 setInterval(() => { checkReset(); renderWeekly(); }, 60000);
 
+// Si cloud.js no llega a cargar (p. ej. error al pegar firebase-config.js), avisa en el portal
+setTimeout(() => {
+  if (!window.CloudLoaded && !document.getElementById('gate')?.hidden) {
+    document.getElementById('gateMsg').innerHTML =
+      '⚠️ No se pudo cargar <b>js/firebase-config.js</b>. Revisa que empiece por <b>export const firebaseConfig = {</b>';
+  }
+}, 6000);
+
 // Puente para cloud.js (Firebase)
 window.App = {
   get state() { return state; },

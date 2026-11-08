@@ -1,5 +1,6 @@
 // ☁️ Sincronización con Firebase: login con Google + Firestore (users/{uid})
 import { firebaseConfig } from './firebase-config.js';
+window.CloudLoaded = true;
 
 const SDK = 'https://www.gstatic.com/firebasejs/11.0.2/';
 const box = document.getElementById('account');
@@ -30,7 +31,7 @@ function hideGate() {
 gateOffline.onclick = hideGate;
 
 if (!configured) {
-  hideGate();
+  msg('⚠️ Falta tu configuración de Firebase en <b>js/firebase-config.js</b> (siguen los valores TU_…)');
   box.innerHTML = '<span class="acc-off" title="Rellena js/firebase-config.js para activar la nube">☁️ Solo local</span>';
 } else {
   init().catch(e => {

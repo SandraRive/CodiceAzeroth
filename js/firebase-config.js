@@ -1,11 +1,10 @@
-// 🔧 Pega aquí la configuración de tu proyecto de Firebase
-// (Consola de Firebase → ⚙️ Configuración del proyecto → Tus apps → App web → SDK setup → Config)
+// Configuración de Firebase del proyecto "codice-azeroth"
 // Estos datos NO son secretos: lo que protege tu base de datos son las reglas de Firestore.
 export const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_PROYECTO.firebaseapp.com",
-  projectId: "TU_PROYECTO",
-  storageBucket: "TU_PROYECTO.appspot.com",
-  messagingSenderId: "000000000000",
-  appId: "TU_APP_ID",
+  apiKey: "AIzaSyBDFQoiFW24u5BQx-3l5sWlem9WiMkK8y4",
+  authDomain: "codice-azeroth.firebaseapp.com",
+  projectId: "codice-azeroth",
+  storageBucket: "codice-azeroth.firebasestorage.app",
+  messagingSenderId: "270003274006",
+  appId: "1:270003274006:web:3e7af9866132a48461d037",
 };
